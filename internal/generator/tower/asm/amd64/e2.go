@@ -71,6 +71,7 @@ func (fq2 *Fq2Amd64) Generate(forceADXCheck bool) error {
 		fq2.generateMulE2BLS12_381(forceADXCheck)
 	case ecc.BLS24_315:
 		fq2.generateMulByNonResidueE2BLS24_315()
+		fq2.generateMulE2BLS24_315(forceADXCheck)
 	}
 
 	return nil

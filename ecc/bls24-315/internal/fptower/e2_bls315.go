@@ -18,8 +18,7 @@ import (
 	"github.com/consensys/gnark-crypto/ecc/bls24-315/fp"
 )
 
-// Mul sets z to the E2-product of x,y, returns z
-func (z *E2) Mul(x, y *E2) *E2 {
+func mulGenericE2(z, x, y *E2) *E2 {
 	var a, b, c fp.Element
 	a.Add(&x.A0, &x.A1)
 	b.Add(&y.A0, &y.A1)
