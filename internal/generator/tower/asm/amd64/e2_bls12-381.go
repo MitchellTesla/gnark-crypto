@@ -18,7 +18,7 @@ import (
 	"github.com/consensys/bavard/amd64"
 )
 
-func (fq2 *Fq2Amd64) generateMulByNonResidueE2BLS381() {
+func (fq2 *Fq2Amd64) generateMulByNonResidueE2BLS12_381() {
 	// // MulByNonResidue multiplies a E2 by (1,1)
 	// func (z *E2) MulByNonResidue(x *E2) *E2 {
 	// 	var a fp.Element
@@ -53,7 +53,7 @@ func (fq2 *Fq2Amd64) generateMulByNonResidueE2BLS381() {
 	fq2.RET()
 }
 
-func (fq2 *Fq2Amd64) generateSquareE2BLS381(forceCheck bool) {
+func (fq2 *Fq2Amd64) generateSquareE2BLS12_381(forceCheck bool) {
 	// // Square sets z to the E2-product of x,x returns z
 	// func (z *E2) Square(x *E2) *E2 {
 	// 	// algo 22 https://eprint.iacr.org/2010/354.pdf
@@ -166,7 +166,7 @@ func (fq2 *Fq2Amd64) generateSquareE2BLS381(forceCheck bool) {
 	fq2.Push(&registers, a0a1...)
 }
 
-func (fq2 *Fq2Amd64) generateMulE2BLS381(forceCheck bool) {
+func (fq2 *Fq2Amd64) generateMulE2BLS12_381(forceCheck bool) {
 	// var a, b, c fp.Element
 	// a.Add(&x.A0, &x.A1)
 	// b.Add(&y.A0, &y.A1)
@@ -278,7 +278,7 @@ func (fq2 *Fq2Amd64) generateMulE2BLS381(forceCheck bool) {
 	fq2.Sub(cStack, op1) // a -= c
 	fq2.modReduceAfterSubScratch(zero, op1, res)
 
-	fq2.MOVQ("z+0(FP)", ax)
+	fq2.MOVQ("res+0(FP)", ax)
 	fq2.Mov(op1, ax, 0, fq2.NbWords)
 
 	// b = b - c
@@ -293,7 +293,7 @@ func (fq2 *Fq2Amd64) generateMulE2BLS381(forceCheck bool) {
 	// No adx
 	if forceCheck {
 		fq2.LABEL(lblNoAdx)
-		fq2.MOVQ("z+0(FP)", amd64.AX)
+		fq2.MOVQ("res+0(FP)", amd64.AX)
 		fq2.MOVQ(amd64.AX, "(SP)")
 		fq2.MOVQ("x+8(FP)", amd64.AX)
 		fq2.MOVQ(amd64.AX, "8(SP)")

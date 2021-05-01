@@ -1,4 +1,4 @@
-// +build !amd64_adx
+// +build amd64_adx
 
 // Copyright 2020 ConsenSys Software Inc.
 //

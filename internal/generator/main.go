@@ -48,12 +48,12 @@ func main() {
 			assertNoError(generator.GenerateFF(conf.Fr, filepath.Join(curveDir, "fr")))
 			assertNoError(generator.GenerateFF(conf.Fp, filepath.Join(curveDir, "fp")))
 
+			// generate tower of extension
+			assertNoError(tower.Generate(conf, filepath.Join(curveDir, "internal", "fptower"), bgen))
+
 			if conf.ID() == gecc.BLS24_315 {
 				return // TODO temporary we just generate field arithmetic;
 			}
-
-			// generate tower of extension
-			assertNoError(tower.Generate(conf, filepath.Join(curveDir, "internal", "fptower"), bgen))
 
 			// generate G1, G2, multiExp, ...
 			assertNoError(ecc.Generate(conf, curveDir, bgen))

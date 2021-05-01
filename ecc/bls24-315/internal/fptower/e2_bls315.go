@@ -48,13 +48,6 @@ func (z *E2) Square(x *E2) *E2 {
 	return z
 }
 
-// MulByNonResidue multiplies a E2 by (0,1)
-func (z *E2) MulByNonResidue(x *E2) *E2 {
-	z.A0, z.A1 = x.A1, x.A0
-	fp.MulBy13(&z.A0)
-	return z
-}
-
 // MulByNonResidueInv multiplies a E2 by (0,1)^{-1}
 func (z *E2) MulByNonResidueInv(x *E2) *E2 {
 	a := x.A1

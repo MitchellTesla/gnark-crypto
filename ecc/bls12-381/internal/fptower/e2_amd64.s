@@ -3137,7 +3137,7 @@ TEXT ·mulAdxE2(SB), $96-24
 	ADCQ    R11, BX
 	ADCQ    R12, SI
 	ADCQ    R13, DI
-	MOVQ    z+0(FP), AX
+	MOVQ    res+0(FP), AX
 	MOVQ    R14, 48(AX)
 	MOVQ    R15, 56(AX)
 	MOVQ    CX, 64(AX)
@@ -3183,7 +3183,7 @@ TEXT ·mulAdxE2(SB), $96-24
 	RET
 
 l5:
-	MOVQ z+0(FP), AX
+	MOVQ res+0(FP), AX
 	MOVQ AX, (SP)
 	MOVQ x+8(FP), AX
 	MOVQ AX, 8(SP)
