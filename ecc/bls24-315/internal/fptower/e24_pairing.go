@@ -29,50 +29,29 @@ func (z *E24) Expt(x *E24) *E24 {
 // https://eprint.iacr.org/2019/077.pdf
 func (z *E24) MulBy012(c0, c1, c2 *E4) *E24 {
 
-	var z0, z1, z2, z3, z4, z5, tmp1, tmp2 E4
-	var t [12]E4
+	var d0, v0, v1, tmp E8
 
-	z0 = z.D0.C0
-	z1 = z.D0.C1
-	z2 = z.D1.C0
-	z3 = z.D1.C1
-	z4 = z.D2.C0
-	z5 = z.D2.C1
+	d0.C0.Set(c0)
+	d0.C1.Set(c1)
 
-	tmp1.MulByNonResidue(c1)
-	tmp2.MulByNonResidue(c2)
+	v0.Mul(&z.D0, &d0)
+	v1.C0.Mul(&z.D1.C0, c2)
+	v1.C1.Mul(&z.D1.C1, c2)
 
-	t[0].Mul(&tmp1, &z1)
-	t[1].Mul(&tmp2, &z5)
-	t[2].Mul(c1, &z0)
-	t[3].Mul(c2, &z4)
-	t[4].Mul(&tmp1, &z3)
-	t[5].Mul(c2, &z0)
-	t[6].Mul(c1, &z2)
-	t[7].Mul(c2, &z1)
-	t[8].Mul(&tmp1, &z5)
-	t[9].Mul(c2, &z2)
-	t[10].Mul(c1, &z4)
-	t[11].Mul(c2, &z3)
+	z.D1.Add(&z.D1, &z.D0)
+	tmp.Set(&d0)
+	tmp.C0.Add(&tmp.C0, c2)
+	z.D1.Mul(&z.D1, &tmp)
+	z.D1.Sub(&z.D1, &v0)
+	z.D1.Sub(&z.D1, &v1)
 
-	z.D0.C0.Mul(c0, &z0).
-		Add(&z.D0.C0, &t[0]).
-		Add(&z.D0.C0, &t[1])
-	z.D0.C1.Mul(c0, &z1).
-		Add(&z.D0.C1, &t[2]).
-		Add(&z.D0.C1, &t[3])
-	z.D1.C0.Mul(c0, &z2).
-		Add(&z.D1.C0, &t[4]).
-		Add(&z.D1.C0, &t[5])
-	z.D1.C1.Mul(c0, &z3).
-		Add(&z.D1.C1, &t[6]).
-		Add(&z.D1.C1, &t[7])
-	z.D2.C0.Mul(c0, &z4).
-		Add(&z.D2.C0, &t[8]).
-		Add(&z.D2.C0, &t[9])
-	z.D2.C1.Mul(c0, &z5).
-		Add(&z.D2.C1, &t[10]).
-		Add(&z.D2.C1, &t[11])
+	z.D0.C0.Mul(&z.D2.C0, c2)
+	z.D0.C1.Mul(&z.D2.C1, c2)
+	z.D0.MulByNonResidue(&z.D0)
+	z.D0.Add(&z.D0, &v0)
+
+	z.D2.Mul(&z.D2, &d0)
+	z.D2.Add(&z.D2, &v1)
 
 	return z
 }
