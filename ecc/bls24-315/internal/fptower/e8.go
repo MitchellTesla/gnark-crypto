@@ -178,12 +178,21 @@ func (z *E8) Mul(x, y *E8) *E8 {
 func (z *E8) Square(x *E8) *E8 {
 
 	//Algorithm 22 from https://eprint.iacr.org/2010/354.pdf
-	var c0, c2, c3 E4
-	c0.Sub(&x.C0, &x.C1)
-	c3.MulByNonResidue(&x.C1).Neg(&c3).Add(&x.C0, &c3)
-	c2.Mul(&x.C0, &x.C1)
-	c0.Mul(&c0, &c3).Add(&c0, &c2)
+	c0 := x.C0
+	c1 := x.C1
+
+	var c2 E4
+	c2.Mul(&c0, &c1)
+	c0.Sub(&c0, &c1)
+
 	z.C1.Double(&c2)
+
+	c1.MulByNonResidue(&c1)
+	c1.Sub(&x.C0, &c1)
+
+	c0.Mul(&c0, &c1)
+	c0.Add(&c0, &c2)
+
 	c2.MulByNonResidue(&c2)
 	z.C0.Add(&c0, &c2)
 
