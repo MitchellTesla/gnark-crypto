@@ -237,7 +237,7 @@ func (z *E8) Exp(x *E8, e big.Int) *E8 {
 
 // Conjugate set z to x conjugated and return z
 func (z *E8) Conjugate(x *E8) *E8 {
-	*z = *x
-	z.C1.Neg(&z.C1)
+	z.C0 = x.C0
+	z.C1.Neg(&x.C1)
 	return z
 }

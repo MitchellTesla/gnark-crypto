@@ -190,7 +190,7 @@ func (z *E4) Square(x *E4) *E4 {
 	//Algorithm 22 from https://eprint.iacr.org/2010/354.pdf
 	var c0, c2, c3 E2
 	c0.Sub(&x.B0, &x.B1)
-	c3.MulByNonResidue(&x.B1).Neg(&c3).Add(&x.B0, &c3)
+	c3.MulByNonResidue(&x.B1).Sub(&x.B0, &c3)
 	c2.Mul(&x.B0, &x.B1)
 	c0.Mul(&c0, &c3).Add(&c0, &c2)
 	z.B1.Double(&c2)
@@ -238,8 +238,8 @@ func (z *E4) Exp(x *E4, e big.Int) *E4 {
 
 // Conjugate set z to x conjugated and return z
 func (z *E4) Conjugate(x *E4) *E4 {
-	*z = *x
-	z.B1.Neg(&z.B1)
+	z.B0 = x.B0
+	z.B1.Neg(&x.B1)
 	return z
 }
 

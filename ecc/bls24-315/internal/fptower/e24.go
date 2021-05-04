@@ -214,7 +214,7 @@ func (z *E24) Inverse(x *E24) *E24 {
 	t3.Mul(&x.D0, &x.D1)
 	t4.Mul(&x.D0, &x.D2)
 	t5.Mul(&x.D1, &x.D2)
-	c0.MulByNonResidue(&t5).Neg(&c0).Add(&c0, &t0)
+	c0.MulByNonResidue(&t5).Sub(&t0, &c0)
 	c1.MulByNonResidue(&t2).Sub(&c1, &t3)
 	c2.Sub(&t1, &t4)
 	t6.Mul(&x.D0, &c0)
