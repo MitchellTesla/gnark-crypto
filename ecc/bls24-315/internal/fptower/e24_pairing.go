@@ -1,22 +1,20 @@
 package fptower
 
-import (
-	"math/bits"
-)
-
 // Expt set z to x^t in E24 and return z (t is the seed of the curve)
 func (z *E24) Expt(x *E24) *E24 {
 
-	const tAbsVal uint64 = 3218079743
+	tAbsNaf := [33]int8{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 1}
 
-	var result E24
+	var result, xInv E24
 	result.Set(x)
+	xInv.Conjugate(x)
 
-	l := bits.Len64(tAbsVal) - 2
-	for i := l; i >= 0; i-- {
+	for i := 31; i >= 0; i-- {
 		result.CyclotomicSquare(&result)
-		if tAbsVal&(1<<uint(i)) != 0 {
+		if tAbsNaf[i] == 1 {
 			result.Mul(&result, x)
+		} else if tAbsNaf[i] == -1 {
+			result.Mul(&result, &xInv)
 		}
 	}
 
