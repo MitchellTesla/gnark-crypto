@@ -40,8 +40,8 @@ func TestEncoder(t *testing.T) {
 	var inD G1Affine
 	var inE G1Affine
 	var inG []G1Affine
-	// var inF G2Affine
-	// var inH []G2Affine
+	var inF G2Affine
+	var inH []G2Affine
 
 	// set values of inputs
 	inA = rand.Uint64()
@@ -49,17 +49,16 @@ func TestEncoder(t *testing.T) {
 	inC.SetRandom()
 	inD.ScalarMultiplication(&g1GenAff, new(big.Int).SetUint64(rand.Uint64()))
 	// inE --> infinity
-	// inF.ScalarMultiplication(&g2GenAff, new(big.Int).SetUint64(rand.Uint64()))
+	inF.ScalarMultiplication(&g2GenAff, new(big.Int).SetUint64(rand.Uint64()))
 	inG = make([]G1Affine, 2)
-	// inH = make([]G2Affine, 0)
+	inH = make([]G2Affine, 0)
 	inG[1] = inD
 
 	// encode them, compressed and raw
 	var buf, bufRaw bytes.Buffer
 	enc := NewEncoder(&buf)
 	encRaw := NewEncoder(&bufRaw, RawEncoding())
-	// toEncode := []interface{}{inA, &inB, &inC, &inD, &inE, &inF, inG, inH}
-	toEncode := []interface{}{inA, &inB, &inC, &inD, &inE, inG}
+	toEncode := []interface{}{inA, &inB, &inC, &inD, &inE, &inF, inG, inH}
 	for _, v := range toEncode {
 		if err := enc.Encode(v); err != nil {
 			t.Fatal(err)
@@ -78,12 +77,11 @@ func TestEncoder(t *testing.T) {
 		var outE G1Affine
 		outE.X.SetOne()
 		outE.Y.SetUint64(42)
-		// var outF G2Affine
+		var outF G2Affine
 		var outG []G1Affine
-		// var outH []G2Affine
+		var outH []G2Affine
 
-		// toDecode := []interface{}{&outA, &outB, &outC, &outD, &outE, &outF, &outG, &outH}
-		toDecode := []interface{}{&outA, &outB, &outC, &outD, &outE, &outG}
+		toDecode := []interface{}{&outA, &outB, &outC, &outD, &outE, &outF, &outG, &outH}
 		for _, v := range toDecode {
 			if err := dec.Decode(v); err != nil {
 				t.Fatal(err)
@@ -101,13 +99,10 @@ func TestEncoder(t *testing.T) {
 		if !inD.Equal(&outD) || !inE.Equal(&outE) {
 			t.Fatal("decode(encode(G1Affine) failed")
 		}
-		/*
-			if !inF.Equal(&outF) {
-				t.Fatal("decode(encode(G2Affine) failed")
-			}
-		*/
-		// if (len(inG) != len(outG)) || (len(inH) != len(outH)) {
-		if len(inG) != len(outG) {
+		if !inF.Equal(&outF) {
+			t.Fatal("decode(encode(G2Affine) failed")
+		}
+		if (len(inG) != len(outG)) || (len(inH) != len(outH)) {
 			t.Fatal("decode(encode(slice(points))) failed")
 		}
 		for i := 0; i < len(inG); i++ {
@@ -128,10 +123,10 @@ func TestEncoder(t *testing.T) {
 
 func TestIsCompressed(t *testing.T) {
 	var g1Inf, g1 G1Affine
-	// var g2Inf, g2 G2Affine
+	var g2Inf, g2 G2Affine
 
 	g1 = g1GenAff
-	// g2 = g2GenAff
+	g2 = g2GenAff
 
 	{
 		b := g1Inf.Bytes()
@@ -161,35 +156,33 @@ func TestIsCompressed(t *testing.T) {
 		}
 	}
 
-	/*
-		{
-			b := g2Inf.Bytes()
-			if !isCompressed(b[0]) {
-				t.Fatal("g2Inf.Bytes() should be compressed")
-			}
+	{
+		b := g2Inf.Bytes()
+		if !isCompressed(b[0]) {
+			t.Fatal("g2Inf.Bytes() should be compressed")
 		}
+	}
 
-		{
-			b := g2Inf.RawBytes()
-			if isCompressed(b[0]) {
-				t.Fatal("g2Inf.RawBytes() should be uncompressed")
-			}
+	{
+		b := g2Inf.RawBytes()
+		if isCompressed(b[0]) {
+			t.Fatal("g2Inf.RawBytes() should be uncompressed")
 		}
+	}
 
-		{
-			b := g2.Bytes()
-			if !isCompressed(b[0]) {
-				t.Fatal("g2.Bytes() should be compressed")
-			}
+	{
+		b := g2.Bytes()
+		if !isCompressed(b[0]) {
+			t.Fatal("g2.Bytes() should be compressed")
 		}
+	}
 
-		{
-			b := g2.RawBytes()
-			if isCompressed(b[0]) {
-				t.Fatal("g2.RawBytes() should be uncompressed")
-			}
+	{
+		b := g2.RawBytes()
+		if isCompressed(b[0]) {
+			t.Fatal("g2.RawBytes() should be uncompressed")
 		}
-	*/
+	}
 
 }
 
@@ -286,7 +279,6 @@ func TestG1AffineSerialization(t *testing.T) {
 	properties.TestingRun(t, gopter.ConsoleReporter(false))
 }
 
-/*
 func TestG2AffineSerialization(t *testing.T) {
 
 	// test round trip serialization of infinity
@@ -379,4 +371,3 @@ func TestG2AffineSerialization(t *testing.T) {
 
 	properties.TestingRun(t, gopter.ConsoleReporter(false))
 }
-*/
