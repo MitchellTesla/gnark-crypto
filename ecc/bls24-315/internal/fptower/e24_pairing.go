@@ -1,22 +1,26 @@
 package fptower
 
+func (z *E24) nSquare(n int) {
+	for i := 0; i < n; i++ {
+		z.CyclotomicSquare(z)
+	}
+}
+
 // Expt set z to x^t in E24 and return z (t is the seed of the curve)
 func (z *E24) Expt(x *E24) *E24 {
-
-	tAbsNaf := [33]int8{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 1}
 
 	var result, xInv E24
 	result.Set(x)
 	xInv.Conjugate(x)
 
-	for i := 31; i >= 0; i-- {
-		result.CyclotomicSquare(&result)
-		if tAbsNaf[i] == 1 {
-			result.Mul(&result, x)
-		} else if tAbsNaf[i] == -1 {
-			result.Mul(&result, &xInv)
-		}
-	}
+	result.nSquare(2)
+	result.Mul(&result, &xInv)
+	result.nSquare(8)
+	result.Mul(&result, &xInv)
+	result.nSquare(2)
+	result.Mul(&result, x)
+	result.nSquare(20)
+	result.Mul(&result, &xInv)
 
 	z.Conjugate(&result)
 

@@ -137,7 +137,16 @@ func MillerLoop(P []G1Affine, Q []G2Affine) (GT, error) {
 
 	var l lineEvaluation
 
-	for i := len(loopCounter) - 2; i >= 0; i-- {
+	// i == 31
+	for k := 0; k < n; k++ {
+		qProj[k].DoubleStep(&l)
+		// line evaluation
+		l.r0.MulByElement(&l.r0, &p[k].Y)
+		l.r2.MulByElement(&l.r2, &p[k].X)
+		result.MulBy012(&l.r0, &l.r1, &l.r2)
+	}
+
+	for i := len(loopCounter) - 3; i >= 0; i-- {
 		result.Square(&result)
 
 		for k := 0; k < n; k++ {
